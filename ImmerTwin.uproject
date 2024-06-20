@@ -1,0 +1,43 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "454E2668-9299-4ED2-8E4C-B1ECEC459680",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "ImmerTwin",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Niagara"
+			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "ModelingToolsEditorMode",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		},
+		{
+			"Name": "OpenXR",
+			"Enabled": true,
+			"SupportedTargetPlatforms": [
+				"Win64",
+				"Linux",
+				"Android",
+				"VisionOS"
+			]
+		},
+		{
+			"Name": "RapyutaSimulationPlugins",
+			"Enabled": true
+		},
+		{
+			"Name": "rclUE",
+			"Enabled": true
+		}
+	]
+}

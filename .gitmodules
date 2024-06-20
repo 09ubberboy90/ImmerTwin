@@ -1,0 +1,8 @@
+[submodule "Plugins/RayputaSimulationPlugins"]
+	path = Plugins/RayputaSimulationPlugins
+	url = https://github.com/rapyuta-robotics/RapyutaSimulationPlugins.git
+	branch = UE5.4
+[submodule "Plugins/rclUE"]
+	path = Plugins/rclUE
+	url = https://github.com/rapyuta-robotics/rclUE.git
+	branch = devel
