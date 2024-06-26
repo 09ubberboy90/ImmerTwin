@@ -112,18 +112,30 @@ void APointCloudShaderBased::InitCloud()
     CroppedTextureWidth = TextureWidth - CropLeft - CropRight;
     CroppedTextureHeight = TextureHeight - CropTop - CropBottom;
     PointCount = CroppedTextureWidth * CroppedTextureHeight;
+    if (NewPointCount > 0)
+    {
+        PointCount = NewPointCount;
+    }else
+    {
+        PointCount = PointCount / SkipPoints;
+    }
+    
     UE_LOG_WITH_INFO_NAMED(LogImmerTwin, Log, TEXT("%d %d %d %d"),CroppedTextureWidth, CroppedTextureHeight , CropLeft, CropRight);
 
-    Region = FUpdateTextureRegion2D(0, 0, CropLeft, CropTop, CroppedTextureWidth, CroppedTextureHeight);
+    Region = FUpdateTextureRegion2D(0, 0, 0, 0, TextureWidth, TextureHeight);
     rendererInstance->SetCastShadow(CastShadow);
 
     // // Create dynamic texture for position:
-    PositionTexture = UTexture2D::CreateTransient(TextureWidth, TextureHeight, PF_G16, "PositionData");
+    const FName PositionName = FName(GetFName().ToString() + FString("_position"));
+    PositionTexture = UTexture2D::CreateTransient(TextureWidth, TextureHeight, PF_G16, PositionName);
+    PositionTexture->MipGenSettings = TMGS_NoMipmaps;
     PositionTexture->Filter = TF_Nearest;
     PositionTexture->UpdateResource();
     //
     // Create dynamic texture for color:
-    ColorTexture = UTexture2D::CreateTransient(TextureWidth, TextureHeight, PF_B8G8R8A8, "ColorTexture");
+    const FName ColorName = FName(GetFName().ToString() + FString("_color"));
+    ColorTexture = UTexture2D::CreateTransient(TextureWidth, TextureHeight, PF_B8G8R8A8, ColorName);
+    ColorTexture->MipGenSettings = TMGS_NoMipmaps;
     ColorTexture->Filter = TF_Nearest;
     ColorTexture->UpdateResource();
 
@@ -131,12 +143,26 @@ void APointCloudShaderBased::InitCloud()
     SetNiagaraVariableTexture(rendererInstance, "User.PositionTexture", PositionTexture);
     SetNiagaraVariableTexture(rendererInstance, "User.ColorTexture", ColorTexture);
 
+    float fCropLeft = CropLeft / static_cast<float>(TextureWidth);
+    float fCropRight = (TextureWidth - CropRight) / static_cast<float>(TextureWidth);
+    float fCropTop = CropTop / static_cast<float>(TextureHeight);
+    float fCropBottom = (TextureHeight - CropBottom) / static_cast<float>(TextureHeight);
+
+    rendererInstance->SetVariableFloat("User.CropLeft", fCropLeft);
+    rendererInstance->SetVariableFloat("User.CropRight", fCropRight);
+    rendererInstance->SetVariableFloat("User.CropTop", fCropTop);
+    rendererInstance->SetVariableFloat("User.CropBottom", fCropBottom);
+    UE_LOG_WITH_INFO_NAMED(LogImmerTwin, Log, TEXT("%f %f %f %f"), fCropLeft,fCropRight, fCropTop,fCropBottom);
+    rendererInstance->SetVariableInt("User.SkippedLeft", CropLeft);
+    rendererInstance->SetVariableInt("User.SkippedTop", CropTop);
     rendererInstance->SetVariableInt("User.TextureWidth", CroppedTextureWidth);
     rendererInstance->SetVariableInt("User.TextureHeight", CroppedTextureHeight);
     rendererInstance->SetVariableInt("User.PointCount", PointCount);
     rendererInstance->SetVariableInt("User.Scale", Scale);
+    rendererInstance->SetVariableInt("User.SkipPoints", SkipPoints);
     rendererInstance->SetVariableFloat("User.Cx", Camera_K[2]);
     rendererInstance->SetVariableFloat("User.Cy", Camera_K[5]);
+    rendererInstance->SetVariableFloat("User.FX", Camera_K[0]);
     rendererInstance->SetVariableFloat("User.ParticleSize", ParticleSize);
     UE_LOG_WITH_INFO_NAMED(LogImmerTwin, Log, TEXT("Cx:%f Cy:%f"),Camera_K[2], Camera_K[5]);
 
@@ -145,15 +171,12 @@ void APointCloudShaderBased::InitCloud()
 }
 void APointCloudShaderBased::PostEditChangeProperty(struct FPropertyChangedEvent& e)
 {
-    Super::PostEditChangeProperty(e);
-
     FName PropertyName = (e.Property != NULL) ? e.Property->GetFName() : NAME_None;
-    UE_LOG_WITH_INFO_NAMED(LogImmerTwin, Log, TEXT("%s"), *PropertyName.ToString());
     if (PropertyName == GET_MEMBER_NAME_CHECKED(APointCloudShaderBased, Reload)) {
         if (Reload)
         {
             InitCloud(); 
             Reload=false;
         }
-}
+    }
 }

@@ -39,8 +39,12 @@ public:
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX")
     int Scale = 10000;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX")
+    int PointCount = 10000;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX")
+    int NewPointCount = -1;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX", meta = (ClampMin = "0.0", ClampMax = "2.0", UIMin = "0.0", UIMax = "2.0"))
-    float ParticleSize;
+    float ParticleSize=1;
     UPROPERTY(EditInstanceOnly)
     bool Reload;
 
@@ -84,6 +88,9 @@ public:
     int CropTop = 0;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Y")
     int CropBottom = 0;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FX")
+    int SkipPoints = 1;
     //
     // UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Z")
     // float ZStart = -1;
@@ -100,7 +107,6 @@ private:
 	// further data:
 	uint32_t TextureWidth;
 	uint32_t TextureHeight;
-	uint32_t PointCount;
     uint32_t CroppedTextureWidth;
     uint32_t CroppedTextureHeight;
 
@@ -121,5 +127,5 @@ protected:
 public:	
 	// Called every frame
 	void InitCloud();
-    virtual void PostEditChangeProperty(FPropertyChangedEvent& e) override;
+    virtual void PostEditChangeProperty(FPropertyChangedEvent& e);
 };
