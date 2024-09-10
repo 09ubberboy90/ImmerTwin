@@ -38,6 +38,10 @@
 		{
 			"Name": "rclUE",
 			"Enabled": true
+		},
+		{
+			"Name": "NiagaraFluids",
+			"Enabled": true
 		}
 	]
 }

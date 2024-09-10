@@ -128,14 +128,19 @@ void APointCloudShaderBased::InitCloud()
     // // Create dynamic texture for position:
     const FName PositionName = FName(GetFName().ToString() + FString("_position"));
     PositionTexture = UTexture2D::CreateTransient(TextureWidth, TextureHeight, PF_G16, PositionName);
-    PositionTexture->MipGenSettings = TMGS_NoMipmaps;
+    #if WITH_EDITORONLY_DATA
+    PositionTexture->MipGenSettings.operator=(TMGS_NoMipmaps);
+    #endif
     PositionTexture->Filter = TF_Nearest;
     PositionTexture->UpdateResource();
     //
     // Create dynamic texture for color:
     const FName ColorName = FName(GetFName().ToString() + FString("_color"));
     ColorTexture = UTexture2D::CreateTransient(TextureWidth, TextureHeight, PF_B8G8R8A8, ColorName);
-    ColorTexture->MipGenSettings = TMGS_NoMipmaps;
+    #if WITH_EDITORONLY_DATA
+    ColorTexture->MipGenSettings.operator=(TMGS_NoMipmaps);
+    #endif
+
     ColorTexture->Filter = TF_Nearest;
     ColorTexture->UpdateResource();
 
