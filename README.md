@@ -1,4 +1,4 @@
-# ImmerSim-UE
+# ImmerTwin
 
 ## Documentation
 
