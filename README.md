@@ -43,6 +43,12 @@ New gripper can be added following the same procedure as a robot and afterward s
 
 In this case a new Robot Target must be created by creating a child blueprint to `GeneralTarget` and updating the mesh and offset
 
+## Configuring the cameras.
+
+The state of the world can be visualised using cameras publishing to specific topics. The project was tested ZED2i cameras. Other cameras might be supported but the shader `Content/shaders/PointCloudSystemDirect.uasset` might need to be adapted to handle the different data organisation.
+
+Each map has 2 cameras titled PointCloud{...}. The position of this object needs to be moved to match that of the cameras. This can be done manually by running the game in simulate mode or using automatic calibration tools (not provided).  This object also allows the configureation of the pointcloud such as updating the number of points or amount of cropping done to the image, along with the topics to listen to. 
+
 ## Author
 
 Florent Audonnet (<https://github.com/09ubberboy90>) - Researcher at University of Glasgow
